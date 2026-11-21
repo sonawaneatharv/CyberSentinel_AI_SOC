@@ -1,0 +1,274 @@
+{
+  "binary_model_name": "LightGBM",
+  "model_comparisons": [
+    {
+      "model_name": "LightGBM",
+      "accuracy": 100.0,
+      "precision": 100.0,
+      "recall": 100.0,
+      "f1_score": 100.0,
+      "train_time_sec": 0.255,
+      "latency_ms_per_flow": 0.0014,
+      "confusion_matrix": [
+        [
+          4392,
+          0
+        ],
+        [
+          0,
+          2298
+        ]
+      ]
+    },
+    {
+      "model_name": "XGBoost",
+      "accuracy": 99.99,
+      "precision": 99.96,
+      "recall": 100.0,
+      "f1_score": 99.98,
+      "train_time_sec": 0.387,
+      "latency_ms_per_flow": 0.0009,
+      "confusion_matrix": [
+        [
+          4391,
+          1
+        ],
+        [
+          0,
+          2298
+        ]
+      ]
+    },
+    {
+      "model_name": "Random Forest",
+      "accuracy": 99.99,
+      "precision": 100.0,
+      "recall": 99.96,
+      "f1_score": 99.98,
+      "train_time_sec": 0.421,
+      "latency_ms_per_flow": 0.0054,
+      "confusion_matrix": [
+        [
+          4392,
+          0
+        ],
+        [
+          1,
+          2297
+        ]
+      ]
+    },
+    {
+      "model_name": "Decision Tree",
+      "accuracy": 99.9,
+      "precision": 99.74,
+      "recall": 99.96,
+      "f1_score": 99.85,
+      "train_time_sec": 0.34,
+      "latency_ms_per_flow": 0.0002,
+      "confusion_matrix": [
+        [
+          4386,
+          6
+        ],
+        [
+          1,
+          2297
+        ]
+      ]
+    }
+  ],
+  "feature_importances": [
+    {
+      "feature": "Flow_IAT_Std",
+      "importance": 13.7
+    },
+    {
+      "feature": "Average_Packet_Size",
+      "importance": 11.4
+    },
+    {
+      "feature": "Flow_Duration",
+      "importance": 9.47
+    },
+    {
+      "feature": "Bwd_Packet_Length_Mean",
+      "importance": 9.43
+    },
+    {
+      "feature": "Fwd_Packet_Length_Max",
+      "importance": 8.87
+    },
+    {
+      "feature": "Destination_Port",
+      "importance": 8.6
+    },
+    {
+      "feature": "Total_Backward_Packets",
+      "importance": 7.4
+    },
+    {
+      "feature": "Flow_Bytes_s",
+      "importance": 4.8
+    },
+    {
+      "feature": "Fwd_Packet_Length_Min",
+      "importance": 4.33
+    },
+    {
+      "feature": "Fwd_Packet_Length_Mean",
+      "importance": 4.23
+    },
+    {
+      "feature": "SYN_Flag_Count",
+      "importance": 4.2
+    },
+    {
+      "feature": "Total_Length_of_Bwd_Packets",
+      "importance": 3.03
+    },
+    {
+      "feature": "Total_Fwd_Packets",
+      "importance": 2.6
+    },
+    {
+      "feature": "Init_Win_bytes_forward",
+      "importance": 2.37
+    },
+    {
+      "feature": "Flow_Packets_s",
+      "importance": 2.07
+    },
+    {
+      "feature": "Total_Length_of_Fwd_Packets",
+      "importance": 1.63
+    },
+    {
+      "feature": "PSH_Flag_Count",
+      "importance": 1.1
+    },
+    {
+      "feature": "Flow_IAT_Mean",
+      "importance": 0.77
+    },
+    {
+      "feature": "ACK_Flag_Count",
+      "importance": 0.0
+    },
+    {
+      "feature": "RST_Flag_Count",
+      "importance": 0.0
+    }
+  ],
+  "mitre_mappings": {
+    "DoS": {
+      "technique_id": "T1498",
+      "technique_name": "Network Denial of Service",
+      "tactic": "Impact",
+      "cvss": 7.5,
+      "severity": "HIGH",
+      "description": "Adversary performs volumetric or state-exhaustion flooding against critical service ports."
+    },
+    "PortScan": {
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "tactic": "Reconnaissance",
+      "cvss": 5.3,
+      "severity": "MEDIUM",
+      "description": "Adversary probes ranges of ports to map open listening services and potential entry points."
+    },
+    "BruteForce": {
+      "technique_id": "T1110",
+      "technique_name": "Brute Force",
+      "tactic": "Credential Access",
+      "cvss": 8.1,
+      "severity": "HIGH",
+      "description": "Adversary repeatedly attempts authentication credential combinations across SSH/FTP endpoints."
+    },
+    "Botnet": {
+      "technique_id": "T1071",
+      "technique_name": "Application Layer Protocol: C2",
+      "tactic": "Command and Control",
+      "cvss": 8.8,
+      "severity": "CRITICAL",
+      "description": "Infected zombie host maintains periodic beacon communication with remote command servers."
+    },
+    "ZeroDay_Anomaly": {
+      "technique_id": "T1203",
+      "technique_name": "Exploitation for Client Execution",
+      "tactic": "Initial Access / Unknown",
+      "cvss": 9.4,
+      "severity": "CRITICAL",
+      "description": "Unsupervised telemetry engine detected an anomalous flow with extreme reconstruction variance."
+    }
+  },
+  "multiclass_evaluation": {
+    "accuracy": 100.0,
+    "classes": [
+      "Botnet",
+      "BruteForce",
+      "DoS",
+      "PortScan"
+    ],
+    "confusion_matrix": [
+      [
+        273,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        404,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        974,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        647
+      ]
+    ],
+    "per_class_metrics": {
+      "Botnet": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1_score": 100.0,
+        "support": 273.0,
+        "mitre_id": "T1071",
+        "cvss": 8.8
+      },
+      "BruteForce": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1_score": 100.0,
+        "support": 404.0,
+        "mitre_id": "T1110",
+        "cvss": 8.1
+      },
+      "DoS": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1_score": 100.0,
+        "support": 974.0,
+        "mitre_id": "T1498",
+        "cvss": 7.5
+      },
+      "PortScan": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1_score": 100.0,
+        "support": 647.0,
+        "mitre_id": "T1046",
+        "cvss": 5.3
+      }
+    }
+  }
+}

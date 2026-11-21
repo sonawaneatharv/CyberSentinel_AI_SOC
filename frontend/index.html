@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentinel AI • Enterprise Network Intrusion Detection</title>
+
+  <!-- Typography: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Bento Grid Design System Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css?v=8.0">
+</head>
+<body class="enterprise-theme">
+
+  <!-- TOP BAR -->
+  <header class="top-navbar">
+    <div class="nav-brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">CYBERSENTINEL</span>
+      <span class="brand-badge">SOC AI ENGINE</span>
+    </div>
+
+    <div class="nav-center-status">
+      <span class="nav-status-dot"></span>
+      <span id="nav-status-label">PERIMETER ACTIVE • TWO-STAGE LIGHTGBM</span>
+    </div>
+
+    <div class="nav-actions">
+      <button id="btn-toggle-stream" class="btn btn-primary-toggle" onclick="toggleStreamPlayPause()">
+        <i id="stream-play-icon" class="fa-solid fa-pause"></i>
+        <span id="stream-play-text">Pause Stream</span>
+      </button>
+
+      <button id="btn-toggle-sniffer" class="btn" onclick="toggleSnifferMode()" title="Toggle Reservoir Simulation / Live Network Adapter">
+        <i class="fa-solid fa-network-wired"></i>
+        <span id="sniffer-btn-text">Simulation Mode</span>
+      </button>
+
+      <button id="btn-toggle-audio" class="btn" onclick="toggleAudio()" title="Sound Effects: Active (Click to Mute)">
+        <i id="audio-icon" class="fa-solid fa-volume-high" style="color: var(--accent);"></i>
+        <span id="audio-btn-label" style="font-size: 11px; font-weight: 700; margin-left: 5px;">Audio FX: ON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ADVERSARY ATTACK INJECTORS (FOR LIVE FACULTY VIVA DEMONSTRATION) -->
+  <div class="demo-injector-strip">
+    <div class="injector-label">
+      <i class="fa-solid fa-bolt-lightning"></i>
+      <span>Demo Threat Injectors:</span>
+    </div>
+    <div class="injector-buttons">
+      <button class="btn-inj btn-inj-dos" onclick="injectAttack('DoS')">
+        <i class="fa-solid fa-cloud-bolt"></i> DoS SYN Flood
+      </button>
+      <button class="btn-inj btn-inj-scan" onclick="injectAttack('PortScan')">
+        <i class="fa-solid fa-crosshairs"></i> Port Scan (Recon)
+      </button>
+      <button class="btn-inj btn-inj-bf" onclick="injectAttack('BruteForce')">
+        <i class="fa-solid fa-key"></i> SSH BruteForce
+      </button>
+      <button class="btn-inj btn-inj-bot" onclick="injectAttack('Botnet')">
+        <i class="fa-solid fa-sitemap"></i> Botnet C2 Beacon
+      </button>
+      <button class="btn-inj btn-inj-zero" onclick="injectAttack('ZeroDay_Anomaly')">
+        <i class="fa-solid fa-shield-virus"></i> ⚡ Zero-Day Unknown
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN BENTO GRID DASHBOARD -->
+  <main class="bento-wrapper">
+    <div class="bento-grid">
+
+      <!-- ============================================================ -->
+      <!-- TILE 1: HERO TILE (GREETING, TOTAL INSPECTED FLOWS, 30-BAR STRIP) -->
+      <!-- ============================================================ -->
+      <section class="bento-tile hero-tile-col">
+        <div class="hero-stats-row">
+          <div>
+            <h1 class="hero-greeting">
+              gm, <span class="hero-greeting-accent">SOC Analyst</span>
+            </h1>
+            <p class="hero-subtext">Real-time deep packet inspection & behavioral anomaly telemetry.</p>
+          </div>
+          <div class="hero-networth-box">
+            <span class="hero-networth-label">Total Inspected Flows</span>
+            <div id="hero-inspected-counter" class="hero-networth-num">1,896</div>
+            <p class="hero-networth-sub">
+              <span id="hero-flow-trend" style="color: var(--accent);">+14.2%</span>
+              <span style="color: var(--color-muted-foreground);"> · 30 intervals</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- 30-interval throughput velocity strip -->
+        <div class="hero-strip-container">
+          <div id="hero-bars-strip" class="hero-bars-strip">
+            <!-- Dynamically populated 30 bars with hover tooltips -->
+          </div>
+          <div class="hero-strip-labels">
+            <span>T -30 intervals</span>
+            <span id="hero-hover-label" style="color: var(--color-foreground);">Packet Velocity Stream</span>
+            <span>Now</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 2: CAPTURED NETWORK PACKET FRAMES (PCAP STACK) -->
+      <!-- ============================================================ -->
+      <section class="bento-tile cards-tile-col">
+        <header class="tile-header">
+          <h3 class="tile-title">
+            <i class="fa-solid fa-network-wired" style="color: var(--accent);"></i>
+            <span>Captured Flow Frames <sup style="font-family: var(--font-mono); font-size: 10px;">3 In Buffer</sup></span>
+          </h3>
+          <span class="tile-action">pcap live</span>
+        </header>
+
+        <div class="card-stack-viewport" id="card-stack-container">
+          <div class="card-stack-inner" style="height: 148px;">
+
+            <!-- Frame 1: DoS SYN Flood Packet -->
+            <button type="button" class="card-face-btn packet-frame-btn" id="threat-card-1" onclick="bringCardToFront(1)" style="top: 0px; z-index: 1; transform: translateX(-50%) scale(0.89);">
+              <span class="card-ratio-box">
+                <span class="card-face-content packet-frame-content packet-frame-dos">
+                  <span class="packet-scanline"></span>
+                  <div class="packet-frame-inner">
+                    <div class="packet-meta-row">
+                      <span class="packet-proto-badge proto-tcp">TCP/IPv4</span>
+                      <span class="packet-flag-tag">FLAGS: [SYN]</span>
+                      <span class="packet-len-tag">LEN: 64B</span>
+                    </div>
+                    <div class="packet-payload-row">
+                      <div class="packet-type-label">DoS SYN Flood</div>
+                      <div class="packet-route-text">198.51.100.22:48500 ➔ :80</div>
+                    </div>
+                    <div class="packet-footer-row">
+                      <span class="packet-mitre-code"><i class="fa-solid fa-shield-halved"></i> MITRE T1498</span>
+                      <span class="packet-rate-stat">48.5 kpkts/s</span>
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </button>
+
+            <!-- Frame 2: PortScan Recon Packet -->
+            <button type="button" class="card-face-btn packet-frame-btn" id="threat-card-2" onclick="bringCardToFront(2)" style="top: 24px; z-index: 2; transform: translateX(-50%) scale(0.945);">
+              <span class="card-ratio-box">
+                <span class="card-face-content packet-frame-content packet-frame-scan">
+                  <span class="packet-scanline"></span>
+                  <div class="packet-frame-inner">
+                    <div class="packet-meta-row">
+                      <span class="packet-proto-badge proto-scan">TCP/IPv4</span>
+                      <span class="packet-flag-tag">FLAGS: [SYN, FIN]</span>
+                      <span class="packet-len-tag">SWEEP: 1-1024</span>
+                    </div>
+                    <div class="packet-payload-row">
+                      <div class="packet-type-label">PortScan Recon</div>
+                      <div class="packet-route-text">203.0.113.88:38192 ➔ :1..1024</div>
+                    </div>
+                    <div class="packet-footer-row">
+                      <span class="packet-mitre-code"><i class="fa-solid fa-crosshairs"></i> MITRE T1046</span>
+                      <span class="packet-rate-stat">12.4 kpkts/s</span>
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </button>
+
+            <!-- Frame 3: Zero-Day Anomaly Packet -->
+            <button type="button" class="card-face-btn packet-frame-btn" id="threat-card-3" onclick="bringCardToFront(3)" style="top: 48px; z-index: 3; transform: translateX(-50%) scale(1);">
+              <span class="card-ratio-box">
+                <span class="card-face-content packet-frame-content packet-frame-zero">
+                  <span class="packet-scanline"></span>
+                  <div class="packet-frame-inner">
+                    <div class="packet-meta-row">
+                      <span class="packet-proto-badge proto-zero">RAW/PAYLOAD</span>
+                      <span class="packet-flag-tag">ENTROPY: 7.82</span>
+                      <span class="packet-len-tag">LEN: 1420B</span>
+                    </div>
+                    <div class="packet-payload-row">
+                      <div class="packet-type-label">Zero-Day Anomaly</div>
+                      <div class="packet-route-text">192.168.1.185:54912 ➔ :8080</div>
+                    </div>
+                    <div class="packet-footer-row">
+                      <span class="packet-mitre-code"><i class="fa-solid fa-shield-virus"></i> UNSEEN VECTOR</span>
+                      <span class="packet-rate-stat">94.2% Anomaly</span>
+                    </div>
+                  </div>
+                </span>
+              </span>
+            </button>
+
+          </div>
+
+          <!-- Frosted bottom packet inspection telemetry panel -->
+          <div class="card-frosted-panel">
+            <div class="card-frosted-meta">
+              <p id="card-active-ip" class="card-active-threat-text">198.51.100.22 ➔ PORT 80</p>
+              <p id="card-active-sub" class="card-active-sub-text">Captured Packet Frame · Volumetric SYN Flood</p>
+            </div>
+            <p id="card-active-score" style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--accent); white-space: nowrap;">98.4% conf</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 3: PACKET VELOCITY GAUGE (WITH SPEED PILLS) -->
+      <!-- ============================================================ -->
+      <section class="bento-tile gas-tile-col">
+        <header class="tile-header">
+          <h3 class="tile-title">Packet Velocity</h3>
+          <span class="tile-action">live</span>
+        </header>
+
+        <div class="gauge-content-wrap">
+          <div class="gauge-svg-wrap">
+            <svg width="150" height="86" viewBox="0 0 150 86">
+              <!-- Muted background arc -->
+              <path d="M 13 78 A 62 62 0 0 1 137 78" fill="none" stroke="var(--color-muted)" stroke-width="10" stroke-linecap="round"/>
+              <!-- Active progress arc -->
+              <path id="gauge-arc-path" d="M 13 78 A 62 62 0 0 1 137 78" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="194.7" stroke-dashoffset="80" style="transition: stroke-dashoffset 900ms var(--ease);"/>
+              <!-- Needle indicator -->
+              <g id="gauge-needle-group" style="transform: rotate(-15deg); transform-origin: 75px 78px; transition: transform 900ms var(--ease);">
+                <line x1="75" y1="78" x2="75" y2="30" stroke="var(--color-foreground)" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+              <circle cx="75" cy="78" r="5" fill="var(--color-foreground)"/>
+            </svg>
+          </div>
+
+          <div class="gauge-main-value">
+            <span id="gauge-packets-num">48.5</span>
+            <span class="gauge-unit">kpkts/s</span>
+          </div>
+          <div id="gauge-bytes-desc" class="gauge-sub-value">≈ 19.4 MB/s throughput</div>
+        </div>
+
+        <div class="gauge-pills-row">
+          <div class="pills-group" role="radiogroup">
+            <button class="pill-btn" onclick="setStreamSpeed('Slow', this)">Slow</button>
+            <button class="pill-btn active" onclick="setStreamSpeed('Normal', this)">Normal</button>
+            <button class="pill-btn" onclick="setStreamSpeed('Fast', this)">Fast</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 4: DUAL CURVE NETWORK TRAFFIC VS BASELINE CHART -->
+      <!-- ============================================================ -->
+      <section class="bento-tile chart-tile-col">
+        <header class="tile-header">
+          <h3 class="tile-title">Live Traffic vs Baseline</h3>
+          <div class="pills-group" role="radiogroup">
+            <button class="pill-btn" onclick="setChartRange('10s', this)">10s</button>
+            <button class="pill-btn active" onclick="setChartRange('1m', this)">1m</button>
+            <button class="pill-btn" onclick="setChartRange('5m', this)">5m</button>
+          </div>
+        </header>
+
+        <div class="chart-stats-summary">
+          <div>
+            <div class="chart-legend-item">
+              <span class="legend-bar-accent"></span>
+              <span>Observed Flow Rate</span>
+            </div>
+            <div id="chart-observed-stat" class="chart-stat-number">48,500 pkts/s</div>
+          </div>
+
+          <div>
+            <div class="chart-legend-item">
+              <span class="legend-bar-dashed"></span>
+              <span>Normal Traffic Baseline</span>
+            </div>
+            <div id="chart-baseline-stat" class="chart-stat-number" style="color: var(--color-muted-foreground);">1,200 pkts/s</div>
+          </div>
+
+          <span id="chart-divergence-badge" class="chart-lead-badge">+40.4x vs Baseline</span>
+        </div>
+
+        <!-- SVG Dual Curve Viewport -->
+        <div class="svg-chart-container" id="svg-chart-box" onmousemove="onChartPointerMove(event)" onmouseleave="onChartPointerLeave()">
+          <svg viewBox="0 0 640 220" preserveAspectRatio="none" class="svg-chart-canvas">
+            <defs>
+              <linearGradient id="chart-fill-grad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Grid lines -->
+            <line x1="0" x2="640" y1="55" y2="55" stroke="var(--color-border)" stroke-dasharray="1 5"/>
+            <line x1="0" x2="640" y1="110" y2="110" stroke="var(--color-border)" stroke-dasharray="1 5"/>
+            <line x1="0" x2="640" y1="165" y2="165" stroke="var(--color-border)" stroke-dasharray="1 5"/>
+
+            <!-- Area fill under primary curve -->
+            <path id="svg-chart-area" d="" fill="url(#chart-fill-grad)"/>
+
+            <!-- Baseline dashed curve -->
+            <path id="svg-chart-baseline" d="" fill="none" stroke="var(--color-muted-foreground)" stroke-width="1.5" stroke-dasharray="4 5"/>
+
+            <!-- Primary observed curve -->
+            <path id="svg-chart-primary" d="" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+
+          <!-- Interactive vertical tracking line and indicator dots -->
+          <div id="chart-cursor-line" class="chart-cursor-line"></div>
+          <div id="chart-cursor-dot-a" class="chart-cursor-dot-a"></div>
+          <div id="chart-cursor-dot-b" class="chart-cursor-dot-b"></div>
+        </div>
+
+        <div class="chart-axis-labels">
+          <span>-60s</span>
+          <span>-45s</span>
+          <span>-30s</span>
+          <span>-15s</span>
+          <span>Now</span>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 5: ATTACK CLASSIFICATION DONUT CHART -->
+      <!-- ============================================================ -->
+      <section class="bento-tile allocation-tile-col">
+        <header class="tile-header">
+          <h3 class="tile-title">
+            <i class="fa-solid fa-chart-pie" style="color: var(--accent);"></i>
+            <span>Threat Allocation</span>
+          </h3>
+          <span class="tile-action">multi-class</span>
+        </header>
+
+        <!-- Donut SVG Viewport with Center Total Metric -->
+        <div class="donut-chart-container">
+          <svg class="donut-svg" viewBox="0 0 200 200" width="200" height="200">
+            <!-- Background track circle -->
+            <circle cx="100" cy="100" r="70" fill="none" stroke="var(--color-muted)" stroke-width="18" />
+            <!-- Donut segments group with -90deg rotation -->
+            <g transform="rotate(-90 100 100)" id="donut-segments-group">
+              <circle id="donut-seg-dos" cx="100" cy="100" r="70" fill="none" stroke="var(--accent-red)" stroke-width="18" stroke-dasharray="0 440" stroke-dashoffset="0" style="transition: stroke-dasharray 900ms var(--ease), stroke-dashoffset 900ms var(--ease);" />
+              <circle id="donut-seg-scan" cx="100" cy="100" r="70" fill="none" stroke="var(--accent-orange)" stroke-width="18" stroke-dasharray="0 440" stroke-dashoffset="0" style="transition: stroke-dasharray 900ms var(--ease), stroke-dashoffset 900ms var(--ease);" />
+              <circle id="donut-seg-bf" cx="100" cy="100" r="70" fill="none" stroke="var(--accent2)" stroke-width="18" stroke-dasharray="0 440" stroke-dashoffset="0" style="transition: stroke-dasharray 900ms var(--ease), stroke-dashoffset 900ms var(--ease);" />
+              <circle id="donut-seg-bot" cx="100" cy="100" r="70" fill="none" stroke="var(--accent-blue)" stroke-width="18" stroke-dasharray="0 440" stroke-dashoffset="0" style="transition: stroke-dasharray 900ms var(--ease), stroke-dashoffset 900ms var(--ease);" />
+              <circle id="donut-seg-zero" cx="100" cy="100" r="70" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="0 440" stroke-dashoffset="0" style="transition: stroke-dasharray 900ms var(--ease), stroke-dashoffset 900ms var(--ease);" />
+            </g>
+          </svg>
+          <div class="donut-center-stat">
+            <span id="donut-total-count" class="donut-center-num">1,392</span>
+            <span class="donut-center-label">INTRUSIONS</span>
+          </div>
+        </div>
+
+        <!-- Breakdown List -->
+        <ul class="alloc-legend-grid">
+          <li class="alloc-legend-item">
+            <span class="alloc-dot-label">
+              <span class="alloc-item-dot" style="background: var(--accent-red);"></span>
+              <span>DoS</span>
+            </span>
+            <span id="alloc-pct-dos" class="alloc-pct-tag">33.8%</span>
+          </li>
+          <li class="alloc-legend-item">
+            <span class="alloc-dot-label">
+              <span class="alloc-item-dot" style="background: var(--accent-orange);"></span>
+              <span>PortScan</span>
+            </span>
+            <span id="alloc-pct-scan" class="alloc-pct-tag">23.9%</span>
+          </li>
+          <li class="alloc-legend-item">
+            <span class="alloc-dot-label">
+              <span class="alloc-item-dot" style="background: var(--accent2);"></span>
+              <span>BruteForce</span>
+            </span>
+            <span id="alloc-pct-bf" class="alloc-pct-tag">13.8%</span>
+          </li>
+          <li class="alloc-legend-item">
+            <span class="alloc-dot-label">
+              <span class="alloc-item-dot" style="background: var(--accent-blue);"></span>
+              <span>Botnet</span>
+            </span>
+            <span id="alloc-pct-bot" class="alloc-pct-tag">9.6%</span>
+          </li>
+          <li class="alloc-legend-item" style="grid-column: span 2;">
+            <span class="alloc-dot-label">
+              <span class="alloc-item-dot" style="background: var(--accent);"></span>
+              <span>Zero-Day Anomaly</span>
+            </span>
+            <span id="alloc-pct-zero" class="alloc-pct-tag">19.0%</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 6: SOLID ACCENT TILE (ACTIVE IPS MITIGATION) -->
+      <!-- ============================================================ -->
+      <section class="bento-tile-solid staking-tile-col">
+        <header class="solid-header">
+          <h3 class="solid-title">Autonomous IPS</h3>
+          <span class="solid-pill">
+            <span class="solid-pill-dot"></span>
+            Enforcing
+          </span>
+        </header>
+
+        <div class="solid-metric-huge">
+          99.8<span class="solid-metric-unit">%</span>
+        </div>
+        <p class="solid-subtitle">Interception Recall on CIC-IDS2017</p>
+
+        <!-- Next epoch / flush countdown -->
+        <div class="solid-countdown-box">
+          <div class="solid-countdown-row">
+            <span style="opacity: 0.75;">Next rule audit</span>
+            <span id="solid-countdown-timer" style="font-family: var(--font-mono);">3m 42s</span>
+          </div>
+          <div class="solid-progress-track">
+            <div id="solid-countdown-bar" class="solid-progress-fill" style="width: 55%;"></div>
+          </div>
+        </div>
+
+        <dl class="solid-kv-list">
+          <div class="solid-kv-row">
+            <dt class="solid-kv-k">Quarantined Hosts</dt>
+            <dd id="solid-quarantined-hosts" class="solid-kv-v">2 active</dd>
+          </div>
+          <div class="solid-kv-row">
+            <dt class="solid-kv-k">Inference Latency</dt>
+            <dd id="solid-inference-speed" class="solid-kv-v">0.014 ms</dd>
+          </div>
+          <div class="solid-kv-row">
+            <dt class="solid-kv-k">Mitigation Engine</dt>
+            <dd class="solid-kv-v">OS Netsh / WFP</dd>
+          </div>
+        </dl>
+
+        <div class="solid-footer-wrap">
+          <p style="font-size: 11px; font-weight: 700; opacity: 0.75;">Throughput across 10 epochs</p>
+          <div class="solid-minichart-bars">
+            <span class="solid-bar-unit" style="height: 60%; opacity: 0.25;"></span>
+            <span class="solid-bar-unit" style="height: 72%; opacity: 0.35;"></span>
+            <span class="solid-bar-unit" style="height: 55%; opacity: 0.4;"></span>
+            <span class="solid-bar-unit" style="height: 84%; opacity: 0.5;"></span>
+            <span class="solid-bar-unit" style="height: 76%; opacity: 0.6;"></span>
+            <span class="solid-bar-unit" style="height: 90%; opacity: 0.7;"></span>
+            <span class="solid-bar-unit" style="height: 85%; opacity: 0.8;"></span>
+            <span class="solid-bar-unit" style="height: 95%; opacity: 0.85;"></span>
+            <span class="solid-bar-unit" style="height: 88%; opacity: 0.9;"></span>
+            <span class="solid-bar-unit" style="height: 100%; opacity: 1;"></span>
+          </div>
+
+          <button type="button" id="btn-block-current-host" class="btn-solid-action" onclick="quarantineCurrentHost()">
+            Enforce Firewall Quarantine
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TILE 7: REAL-TIME NETWORK TRAFFIC & SECURITY INCIDENT STREAM -->
+      <!-- ============================================================ -->
+      <section class="bento-tile activity-tile-col">
+        <header class="tile-header" style="flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+          <div>
+            <h3 class="tile-title" style="font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-network-wired" style="color: var(--accent-blue);"></i>
+              <span>Real-Time Network Traffic & Security Incident Stream</span>
+            </h3>
+            <p class="panel-desc" style="font-size: 12px; color: var(--color-muted-foreground); margin-top: 2px;">
+              Continuous telemetry stream displaying both Normal (BENIGN) network traffic and Flagged Attacks
+            </p>
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="traffic-filter-group" role="radiogroup">
+              <button class="traffic-filter-btn active" id="btn-filter-all" onclick="setTrafficFilter('all')">
+                🌐 All Traffic (<span id="count-filter-all">0</span>)
+              </button>
+              <button class="traffic-filter-btn" id="btn-filter-attacks" onclick="setTrafficFilter('attacks')">
+                🚨 Attacks (<span id="count-filter-attacks">0</span>)
+              </button>
+              <button class="traffic-filter-btn" id="btn-filter-normal" onclick="setTrafficFilter('normal')">
+                🟢 Normal (<span id="count-filter-normal">0</span>)
+              </button>
+            </div>
+            
+            <div class="alerts-count-badge" id="alerts-count">
+              0 Flows Inspected (0 Attacks)
+            </div>
+          </div>
+        </header>
+
+        <div class="table-responsive" style="margin-top: 14px; overflow-x: auto; max-height: 420px; overflow-y: auto;">
+          <table class="soc-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Source IP</th>
+                <th>Destination Target</th>
+                <th>Traffic Classification</th>
+                <th>Security Status</th>
+                <th>Model Confidence</th>
+                <th>Firewall / ML Action</th>
+              </tr>
+            </thead>
+            <tbody id="alerts-table-body">
+              <tr class="empty-row">
+                <td colspan="7">Waiting for traffic stream. Start streaming to view real-time network packets.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- EXPLAINABLE AI (XAI) DEEP-DIVE SHAP TRANSPARENCY SECTION -->
+  <!-- ============================================================ -->
+  <section class="xai-section-wrapper" id="xai-audit-section">
+    <div class="xai-bento-tile">
+      <div class="xai-header">
+        <div>
+          <h2 class="xai-main-title">
+            <i class="fa-solid fa-brain"></i>
+            Explainable AI (XAI) • TreeSHAP Decision Boundary Audit
+          </h2>
+          <p class="xai-subdesc">
+            Transparency engine verifying exact statistical reasons for threat flagging against the CIC-IDS2017 distribution.
+          </p>
+        </div>
+        <span id="xai-active-threat-badge" class="brand-badge" style="background: color-mix(in oklch, var(--accent-red) 15%, transparent); color: var(--accent-red); border-color: var(--accent-red);">
+          INSPECTING: DoS SYN Flood (98.4%)
+        </span>
+      </div>
+
+      <!-- Feature Metrics Ribbon -->
+      <div class="xai-metrics-ribbon">
+        <div class="xai-ribbon-card">
+          <div class="xai-ribbon-k">Attacker IP</div>
+          <div id="xai-host-ip" class="xai-ribbon-v" style="color: var(--accent-red);">198.51.100.22</div>
+        </div>
+        <div class="xai-ribbon-card">
+          <div class="xai-ribbon-k">Target Port</div>
+          <div id="xai-target-port" class="xai-ribbon-v">Port 80 (HTTP)</div>
+        </div>
+        <div class="xai-ribbon-card">
+          <div class="xai-ribbon-k">MITRE ATT&CK</div>
+          <div id="xai-mitre-tag" class="xai-ribbon-v">T1498 (DoS)</div>
+        </div>
+        <div class="xai-ribbon-card">
+          <div class="xai-ribbon-k">Anomaly Score</div>
+          <div id="xai-anomaly-score" class="xai-ribbon-v" style="color: var(--accent);">94.2%</div>
+        </div>
+        <div class="xai-ribbon-card">
+          <div class="xai-ribbon-k">Inference Latency</div>
+          <div id="xai-latency-score" class="xai-ribbon-v">0.014 ms</div>
+        </div>
+      </div>
+
+      <!-- SHAP Feature Cards Grid -->
+      <div class="xai-cards-grid" id="main-xai-features-container">
+        <!-- Dynamically rendered SHAP feature comparison cards -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Audio Chime for Alarms -->
+  <audio id="alert-audio-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU9vT18A" type="audio/wav">
+  </audio>
+
+  <!-- Application Logic -->
+  <script src="/static/js/app.js?v=8.0"></script>
+</body>
+</html>

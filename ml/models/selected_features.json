@@ -1,0 +1,22 @@
+[
+  "Destination_Port",
+  "Flow_Duration",
+  "Total_Fwd_Packets",
+  "Total_Backward_Packets",
+  "Total_Length_of_Fwd_Packets",
+  "Total_Length_of_Bwd_Packets",
+  "Fwd_Packet_Length_Max",
+  "Fwd_Packet_Length_Min",
+  "Fwd_Packet_Length_Mean",
+  "Bwd_Packet_Length_Mean",
+  "Flow_Bytes_s",
+  "Flow_Packets_s",
+  "Flow_IAT_Mean",
+  "Flow_IAT_Std",
+  "SYN_Flag_Count",
+  "RST_Flag_Count",
+  "PSH_Flag_Count",
+  "ACK_Flag_Count",
+  "Average_Packet_Size",
+  "Init_Win_bytes_forward"
+]
